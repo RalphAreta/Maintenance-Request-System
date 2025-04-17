@@ -25,10 +25,19 @@ app.use(express.static(path.join(__dirname, '..', 'frontend')));
 // Import API routes
 const authRoutes = require('./routes/authRoutes');
 const maintenanceRoutes = require('./routes/maintenanceRoutes');
+const userRoutes = require('./routes/userRoutes');
+const feedbackRoutes = require('./routes/feedbackRoutes');
+
+//console.log(authRoutes);
+//console.log(maintenanceRoutes);
+//console.log(userRoutes);
+//console.log(feedbackRoutes);
 
 // API Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/requests', maintenanceRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/feedback', feedbackRoutes);
 
 // Serve the login page on the root route
 app.get('/', (req, res) => {
@@ -65,6 +74,11 @@ app.get('/USER/ANNOUNCEMENT.html', (req, res) => {
 
 app.get('/USER/GENERATE.html', (req, res) => {
   res.sendFile(path.join(__dirname, '..', 'frontend', 'MRS', 'USER', 'GENERATE.html'));
+});
+
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ message: 'Internal server error' });
 });
 
 // Start the server
