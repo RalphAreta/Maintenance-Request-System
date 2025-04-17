@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const express = require('express');
 const path = require('path');
 const cors = require('cors');
@@ -11,27 +13,26 @@ app.use(express.json()); // To parse JSON request bodies
 // Add this middleware to filter out requests to .git and node_modules
 app.use((req, res, next) => {
   const requestedPath = path.join(__dirname, req.path);
-  // If the requested file is within .git or node_modules, block it
   if (requestedPath.includes('.git') || requestedPath.includes('node_modules')) {
-    return res.status(403).send('Access Forbidden');  // Forbidden error for sensitive paths
+    return res.status(403).send('Access Forbidden');
   }
-  next();  // Otherwise, proceed to the next middleware
+  next();
 });
 
 // Serve static files from the 'frontend' folder
 app.use(express.static(path.join(__dirname, '..', 'frontend')));
 
 // Import API routes
-const authRoutes = require('./routes/authRoutes'); // Authentication routes
-const maintenanceRoutes = require('./routes/maintenanceRoutes'); // Maintenance routes (if needed)
+const authRoutes = require('./routes/authRoutes');
+const maintenanceRoutes = require('./routes/maintenanceRoutes');
 
-// API Routes (these should be above the catch-all route)
-app.use('/api/auth', authRoutes); // Authentication routes
-app.use('/api/maintenance', maintenanceRoutes); // Maintenance routes (if needed)
+// API Routes
+app.use('/api/auth', authRoutes);
+app.use('/api/requests', maintenanceRoutes);
 
 // Serve the login page on the root route
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, '..', 'frontend', 'MRS', 'LOGIN.html')); // Corrected path
+  res.sendFile(path.join(__dirname, '..', 'frontend', 'MRS', 'LOGIN.html'));
 });
 
 // Serve the login page
@@ -44,12 +45,29 @@ app.get('/SIGNUP.html', (req, res) => {
   res.sendFile(path.join(__dirname, '..', 'frontend', 'MRS', 'SIGNUP.html'));
 });
 
-// Serve the homepage (acting as the dashboard) on the /dashboard route
+// Serve the homepage (acting as the dashboard)
 app.get('/dashboard', (req, res) => {
   res.sendFile(path.join(__dirname, '..', 'frontend', 'MRS', 'USER', 'HOMEPAGE.html'));
 });
 
+// 🔽 Newly added routes for user pages 🔽
+app.get('/USER/HOMEPAGE.html', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'frontend', 'MRS', 'USER', 'HOMEPAGE.html'));
+});
+
+app.get('/USER/PROFILE.html', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'frontend', 'MRS', 'USER', 'PROFILE.html'));
+});
+
+app.get('/USER/ANNOUNCEMENT.html', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'frontend', 'MRS', 'USER', 'ANNOUNCEMENT.html'));
+});
+
+app.get('/USER/GENERATE.html', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'frontend', 'MRS', 'USER', 'GENERATE.html'));
+});
+
 // Start the server
 app.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`);
+  console.log(`🚀 Server running on http://localhost:${PORT}`);
 });

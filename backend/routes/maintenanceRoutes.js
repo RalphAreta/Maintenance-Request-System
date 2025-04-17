@@ -1,12 +1,24 @@
 const express = require('express');
 const router = express.Router();
 const authenticate = require('../middleware/authenticate');
-const { createMaintenanceRequest, getMaintenanceRequests } = require('../controllers/maintenanceController');
+const maintenanceController = require('../controllers/maintenanceController');
 
-// Protected route for creating maintenance requests
-router.post('/create', authenticate, createMaintenanceRequest);
+// Create maintenance request (Authenticated users)
+router.post('/create', authenticate, maintenanceController.createRequest);
 
-// Route to get maintenance requests
-router.get('/', authenticate, getMaintenanceRequests);
+// Get all requests (Admin only, can customize auth logic later)
+router.get('/', authenticate, maintenanceController.getAllRequests);
+
+// Get request by ID
+router.get('/:id', authenticate, maintenanceController.getRequestById);
+
+// Get requests by user ID
+router.get('/user/:userId', authenticate, maintenanceController.getRequestsByUser);
+
+// Update request (status and assignment)
+router.put('/:id', authenticate, maintenanceController.updateRequestStatus);
+
+// Delete request (optional, maybe for admin only)
+router.delete('/:id', authenticate, maintenanceController.deleteRequest);
 
 module.exports = router;
