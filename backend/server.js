@@ -76,6 +76,7 @@ app.get('/USER/GENERATE.html', (req, res) => {
   res.sendFile(path.join(__dirname, '..', 'frontend', 'MRS', 'USER', 'GENERATE.html'));
 });
 
+// Error Handling
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({ message: 'Internal server error' });

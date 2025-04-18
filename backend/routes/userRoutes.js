@@ -1,12 +1,18 @@
 const express = require('express');
 const router = express.Router();
 const authenticate = require('../middleware/authenticate');
+const authorize = require('../middleware/authorize');
 const {
   getAllUsers,
   getUsersByRole,
   updateUserRole,
   deleteUser
 } = require('../controllers/userController');
+
+// Admin only route
+router.get('/admin', authenticate, authorize(['admin']), (req, res) => {
+  res.send('Admin access granted');
+});
 
 // All routes below require authentication
 router.use(authenticate);
